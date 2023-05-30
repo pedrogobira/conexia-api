@@ -1,6 +1,5 @@
 package com.conexia.api.post;
 
-import com.conexia.api.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 

@@ -4,5 +4,5 @@ public enum ColorName {
     YELLOW,
     PINK,
     GREEN,
-    PURPLE;
+    PURPLE
 }
