@@ -1,7 +1,5 @@
 package com.conexia.api.post;
 
-import com.conexia.api.user.AccountService;
-import com.conexia.api.user.User;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -13,12 +11,10 @@ import java.util.List;
 public class PostService {
     private final PostRepository postRepository;
     private final LikeRepository likeRepository;
-    private final AccountService accountService;
 
-    public PostService(PostRepository postRepository, LikeRepository likeRepository, AccountService accountService) {
+    public PostService(PostRepository postRepository, LikeRepository likeRepository) {
         this.postRepository = postRepository;
         this.likeRepository = likeRepository;
-        this.accountService = accountService;
     }
 
     public PostResponseDto getById(Long id) {
