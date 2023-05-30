@@ -2,15 +2,14 @@ package com.conexia.api.post;
 
 import com.conexia.api.user.User;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.util.List;
 
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -21,7 +20,7 @@ public class Post {
     @GeneratedValue
     private Long id;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "author_id", referencedColumnName = "id")
     private User author;
 
@@ -31,7 +30,7 @@ public class Post {
     @Column(nullable = false)
     private LocalDate date;
 
-    @Column(nullable = false)
+    @Column
     private Boolean privacy;
 
     @OneToMany(mappedBy = "post")
