@@ -4,7 +4,6 @@ import com.conexia.api.user.AccountService;
 import com.conexia.api.user.User;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.BeanUtils;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -26,6 +25,7 @@ public class PostService {
         var post = postRepository.findById(id).orElseThrow();
         var dto = new PostResponseDto();
         BeanUtils.copyProperties(post, dto);
+        dto.setAuthorId(post.getAuthor().getId());
         return dto;
     }
 
@@ -36,35 +36,27 @@ public class PostService {
                 posts) {
             var dto = new PostResponseDto();
             BeanUtils.copyProperties(post, dto);
+            dto.setAuthorId(post.getAuthor().getId());
             dtos.add(dto);
         }
         return dtos;
     }
 
-    @Transactional
-    public void save(PostRequestDto dto) {
-        var post = new Post();
-        var userDto = accountService.findById(dto.getAuthorId());
-        BeanUtils.copyProperties(dto, post);
-        var user = new User();
-        BeanUtils.copyProperties(userDto, user);
-        user.setId(dto.getAuthorId());
-        post.setAuthor(user);
-        postRepository.save(post);
-    }
 
     @Transactional
-    public Long like(LikeRequestDto dto) {
+    public boolean like(LikeRequestDto dto) {
         var post = postRepository.findById(dto.getPostId()).orElseThrow();
-        var like = new Like();
-        like.setPost(postRepository.findById(dto.getPostId()).orElseThrow());
-        var userDto = accountService.findById(dto.getUserId());
-        var user = new User();
-        BeanUtils.copyProperties(userDto, user);
-        user.setId(dto.getUserId());
-        like.setUser(user);
-        likeRepository.save(like);
-        return post.getTotalLikes();
+        var result = likeRepository.findByUserIdAndPostId(post.getId(), post.getAuthor().getId());
+
+        if (result == null) {
+            var like = new Like();
+            like.setPost(post);
+            like.setUser(post.getAuthor());
+            likeRepository.save(like);
+            return true;
+        }
+
+        return false;
     }
 }
 
