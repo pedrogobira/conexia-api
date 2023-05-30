@@ -11,9 +11,11 @@ import java.util.List;
 @RequestMapping("/api/v1/post")
 public class PostController {
     private final PostService postService;
+    private final PosterFacade posterFacade;
 
-    public PostController(PostService postService) {
+    public PostController(PostService postService, PosterFacade posterFacade) {
         this.postService = postService;
+        this.posterFacade = posterFacade;
     }
 
     @GetMapping("/author/{id}")
@@ -28,13 +30,16 @@ public class PostController {
 
     @PostMapping
     public ResponseEntity<Object> save(@RequestBody @Valid PostRequestDto dto) {
-        postService.save(dto);
+        posterFacade.create(dto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @PostMapping("/like")
     public ResponseEntity<Object> like(@RequestBody @Valid LikeRequestDto dto) {
-        var totalLikes = postService.like(dto);
+        var result = postService.like(dto);
+        if (!result) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }
