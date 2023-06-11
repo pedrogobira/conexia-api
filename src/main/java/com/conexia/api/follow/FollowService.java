@@ -1,6 +1,7 @@
 package com.conexia.api.follow;
 
 import com.conexia.api.user.AccountService;
+import com.conexia.api.user.AuthenticationService;
 import com.conexia.api.user.User;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.BeanUtils;
@@ -10,25 +11,22 @@ import org.springframework.stereotype.Service;
 public class FollowService {
     private final AccountService accountService;
     private final FollowerRepository followerRepository;
+    private final AuthenticationService authenticationService;
 
-    public FollowService(AccountService accountService, FollowerRepository followerRepository) {
+    public FollowService(AccountService accountService, FollowerRepository followerRepository, AuthenticationService authenticationService) {
         this.accountService = accountService;
         this.followerRepository = followerRepository;
+        this.authenticationService = authenticationService;
     }
 
     @Transactional
     public boolean create(FollowRequestDto dto) {
-        var followerDto = accountService.findById(dto.getFollowerId());
         var followedDto = accountService.findById(dto.getFollowedId());
-
-        var follower = new User();
         var followed = new User();
-
-        BeanUtils.copyProperties(followerDto, follower);
         BeanUtils.copyProperties(followedDto, followed);
-
-        follower.setId(dto.getFollowerId());
         followed.setId(dto.getFollowedId());
+
+        var follower = authenticationService.getLoggedInUser();
 
         var record = new Follower();
         record.setFollower(follower);

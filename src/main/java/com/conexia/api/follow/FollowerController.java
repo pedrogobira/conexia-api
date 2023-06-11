@@ -29,8 +29,8 @@ public class FollowerController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<RecommendResponseDto> recommend(@PathVariable Long id) {
-        return ResponseEntity.status(HttpStatus.OK).body(recommendService.recommend(id));
+    @GetMapping
+    public ResponseEntity<RecommendResponseDto> recommend() {
+        return ResponseEntity.status(HttpStatus.OK).body(recommendService.recommend());
     }
 }

@@ -12,7 +12,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class FollowRequestDto {
     @NotBlank
-    private Long followerId;
-    @NotBlank
     private Long followedId;
 }

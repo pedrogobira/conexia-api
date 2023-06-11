@@ -1,5 +1,6 @@
 package com.conexia.api.follow;
 
+import com.conexia.api.user.AuthenticationService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -8,13 +9,16 @@ import java.util.Collections;
 @Service
 public class RecommendService {
     private final FollowerRepository followerRepository;
+    private final AuthenticationService authenticationService;
 
-    public RecommendService(FollowerRepository followerRepository) {
+    public RecommendService(FollowerRepository followerRepository, AuthenticationService authenticationService) {
         this.followerRepository = followerRepository;
+        this.authenticationService = authenticationService;
     }
 
-    public RecommendResponseDto recommend(Long userId) {
-        var followeds = followerRepository.getFollowedsByFollower_Id(userId);
+    public RecommendResponseDto recommend() {
+        var user = authenticationService.getLoggedInUser();
+        var followeds = followerRepository.getFollowedsByFollower_Id(user.getId());
 
         if (followeds.isEmpty()) {
             throw new EntityNotFoundException();
