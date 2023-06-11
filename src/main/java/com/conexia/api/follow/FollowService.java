@@ -1,5 +1,6 @@
 package com.conexia.api.follow;
 
+import com.conexia.api.exception.ConflictException;
 import com.conexia.api.user.AccountService;
 import com.conexia.api.user.AuthenticationService;
 import com.conexia.api.user.User;
@@ -27,6 +28,10 @@ public class FollowService {
         followed.setId(dto.getFollowedId());
 
         var follower = authenticationService.getLoggedInUser();
+
+        if (followerRepository.getByFollower_IdAndFollowed_Id(follower.getId(), followed.getId()).isPresent()) {
+            throw new ConflictException();
+        }
 
         var record = new Follower();
         record.setFollower(follower);

@@ -5,6 +5,7 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
+import java.util.NoSuchElementException;
 
 @Service
 public class RecommendService {
@@ -21,7 +22,7 @@ public class RecommendService {
         var followeds = followerRepository.getFollowedsByFollower_Id(user.getId());
 
         if (followeds.isEmpty()) {
-            throw new EntityNotFoundException();
+            throw new NoSuchElementException();
         }
 
         Collections.shuffle(followeds);
@@ -30,7 +31,7 @@ public class RecommendService {
         var followedsByFollowed = followerRepository.getFollowedsByFollower_Id(followed.getId());
 
         if (followedsByFollowed.isEmpty()) {
-            throw new EntityNotFoundException();
+            throw new NoSuchElementException();
         }
 
         Collections.shuffle(followeds);
