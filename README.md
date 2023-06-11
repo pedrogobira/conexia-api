@@ -7,3 +7,5 @@ Recomendado utilizar um container docker para isso. Segue comando para rodar um 
 ``` sh
 sudo docker run --name conexia-postgres -p 5432:5432 -e POSTGRES_PASSWORD=root -d postgres 
 ```
+
+O arquivo do schema do postman pode ser encontrado nesse repositório com o nome de `CONEXIA.postman_collection.json`.
