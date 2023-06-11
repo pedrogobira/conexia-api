@@ -29,7 +29,7 @@ public class FollowerController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    @GetMapping
+    @GetMapping("/recommend")
     public ResponseEntity<RecommendResponseDto> recommend() {
         return ResponseEntity.status(HttpStatus.OK).body(recommendService.recommend());
     }

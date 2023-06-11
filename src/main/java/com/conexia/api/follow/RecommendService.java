@@ -1,7 +1,6 @@
 package com.conexia.api.follow;
 
 import com.conexia.api.user.AuthenticationService;
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
