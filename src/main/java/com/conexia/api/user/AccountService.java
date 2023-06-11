@@ -2,6 +2,7 @@ package com.conexia.api.user;
 
 import jakarta.transaction.Transactional;
 import org.springframework.beans.BeanUtils;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -17,6 +18,8 @@ public class AccountService {
     public void save(AccountRequestDto dto) {
         var user = new User();
         BeanUtils.copyProperties(dto, user);
+        var encodedPassword = new BCryptPasswordEncoder().encode(dto.getPassword());
+        user.setPassword(encodedPassword);
         userRepository.save(user);
     }
 
@@ -33,8 +36,13 @@ public class AccountService {
     }
 
     public boolean existsByEmail(String email) {
-        var user = userRepository.findByEmail(email);
+        var user = userRepository.findByLogin(email);
         return user.isPresent();
+    }
+
+    public User findByEmail(String email) {
+        var user = userRepository.findByLogin(email);
+        return user.get();
     }
 
     @Transactional
@@ -51,6 +59,8 @@ public class AccountService {
         }
         var oldUser = user.clone();
         BeanUtils.copyProperties(dto, user);
+        var encodedPassword = new BCryptPasswordEncoder().encode(dto.getPassword());
+        user.setPassword(encodedPassword);
         userRepository.save(user);
         var updatedUser = userRepository.findById(id).orElseThrow();
         return oldUser != updatedUser;

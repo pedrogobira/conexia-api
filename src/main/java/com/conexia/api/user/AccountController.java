@@ -18,7 +18,7 @@ public class AccountController {
 
     @PostMapping
     public ResponseEntity<Object> save(@RequestBody @Valid AccountRequestDto dto) {
-        if (accountService.existsByEmail(dto.getEmail())) {
+        if (accountService.existsByEmail(dto.getLogin())) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Conflict: E-mail in use");
         }
         accountService.save(dto);
