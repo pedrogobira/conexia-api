@@ -31,16 +31,15 @@ public class AccountController {
         return ResponseEntity.status(HttpStatus.OK).body(dto);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Object> delete(@PathVariable(value = "id") Long id) {
-        accountService.delete(id);
+    @DeleteMapping
+    public ResponseEntity<Object> delete() {
+        accountService.delete();
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Object> update(@PathVariable(value = "id") Long id,
-                                         @RequestBody @Valid AccountRequestDto dto) {
-        var result = accountService.update(id, dto);
+    @PutMapping
+    public ResponseEntity<Object> update(@RequestBody @Valid AccountRequestDto dto) {
+        var result = accountService.update(dto);
         if (!result) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Nothing to update");
         }

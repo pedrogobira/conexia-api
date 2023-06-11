@@ -9,9 +9,11 @@ import org.springframework.stereotype.Service;
 public class AccountService {
 
     private final UserRepository userRepository;
+    private final AuthenticationService authenticationService;
 
-    public AccountService(UserRepository userRepository) {
+    public AccountService(UserRepository userRepository, AuthenticationService authenticationService) {
         this.userRepository = userRepository;
+        this.authenticationService = authenticationService;
     }
 
     @Transactional
@@ -31,8 +33,9 @@ public class AccountService {
     }
 
     @Transactional
-    public void delete(Long id) {
-        userRepository.deleteById(id);
+    public void delete() {
+        var user = authenticationService.getLoggedInUser();
+        userRepository.deleteById(user.getId());
     }
 
     public boolean existsByEmail(String email) {
@@ -40,29 +43,23 @@ public class AccountService {
         return user.isPresent();
     }
 
-    public User findByEmail(String email) {
-        var user = userRepository.findByLogin(email);
-        return user.get();
-    }
-
     @Transactional
-    public boolean update(Long id, AccountRequestDto dto) {
+    public boolean update(AccountRequestDto dto) {
         var newUser = new User();
         BeanUtils.copyProperties(dto, newUser);
-        var optionalUser = userRepository.findById(id);
-        if (optionalUser.isEmpty()) {
-            return false;
-        }
-        var user = optionalUser.get();
+
+        var user = authenticationService.getLoggedInUser();
+
         if (user == newUser) {
             return false;
         }
+
         var oldUser = user.clone();
         BeanUtils.copyProperties(dto, user);
         var encodedPassword = new BCryptPasswordEncoder().encode(dto.getPassword());
         user.setPassword(encodedPassword);
         userRepository.save(user);
-        var updatedUser = userRepository.findById(id).orElseThrow();
+        var updatedUser = userRepository.findById(user.getId()).orElseThrow();
         return oldUser != updatedUser;
     }
 }

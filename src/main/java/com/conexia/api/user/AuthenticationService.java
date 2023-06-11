@@ -14,9 +14,6 @@ public class AuthenticationService implements UserDetailsService {
     @Autowired
     private AuthenticationRepository repository;
 
-    @Autowired
-    private AccountService accountService;
-
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return repository.findByLogin(username);
@@ -25,6 +22,6 @@ public class AuthenticationService implements UserDetailsService {
     public User getLoggedInUser() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String username = auth.getName();
-        return accountService.findByEmail(username);
+        return (User) repository.findByLogin(username);
     }
 }
