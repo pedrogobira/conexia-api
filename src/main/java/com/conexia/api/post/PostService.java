@@ -1,5 +1,6 @@
 package com.conexia.api.post;
 
+import com.conexia.api.user.AuthenticationService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -11,10 +12,12 @@ import java.util.List;
 public class PostService {
     private final PostRepository postRepository;
     private final LikeRepository likeRepository;
+    private final AuthenticationService authenticationService;
 
-    public PostService(PostRepository postRepository, LikeRepository likeRepository) {
+    public PostService(PostRepository postRepository, LikeRepository likeRepository, AuthenticationService authenticationService) {
         this.postRepository = postRepository;
         this.likeRepository = likeRepository;
+        this.authenticationService = authenticationService;
     }
 
     public PostResponseDto getById(Long id) {
@@ -42,7 +45,8 @@ public class PostService {
     @Transactional
     public boolean like(LikeRequestDto dto) {
         var post = postRepository.findById(dto.getPostId()).orElseThrow();
-        var result = likeRepository.findByUserIdAndPostId(post.getId(), post.getAuthor().getId());
+        var user = authenticationService.getLoggedInUser();
+        var result = likeRepository.findByUserIdAndPostId(user.getId(), post.getId());
 
         if (result == null) {
             var like = new Like();

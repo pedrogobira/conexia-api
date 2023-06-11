@@ -12,7 +12,6 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PostRequestDto {
-    private Long authorId;
     private String body;
     private LocalDate date;
     private Boolean privacy;
