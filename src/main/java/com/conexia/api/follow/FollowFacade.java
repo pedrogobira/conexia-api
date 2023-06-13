@@ -11,9 +11,7 @@ public class FollowFacade {
     }
 
     public void follow(FollowRequestDto dto) {
-        var result = service.create(dto);
-        if (result) {
-            service.notifyFollowed();
-        }
+        var follower = service.create(dto);
+        service.notifyFollowed(follower);
     }
 }

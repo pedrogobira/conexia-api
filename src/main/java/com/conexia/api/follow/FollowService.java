@@ -1,6 +1,7 @@
 package com.conexia.api.follow;
 
 import com.conexia.api.exception.ConflictException;
+import com.conexia.api.notification.NotifierFacade;
 import com.conexia.api.user.AccountService;
 import com.conexia.api.user.AuthenticationService;
 import com.conexia.api.user.User;
@@ -13,15 +14,18 @@ public class FollowService {
     private final AccountService accountService;
     private final FollowerRepository followerRepository;
     private final AuthenticationService authenticationService;
+    private final NotifierFacade notifierFacade;
 
-    public FollowService(AccountService accountService, FollowerRepository followerRepository, AuthenticationService authenticationService) {
+    public FollowService(AccountService accountService, FollowerRepository followerRepository, AuthenticationService authenticationService,
+                         NotifierFacade notifierFacade) {
         this.accountService = accountService;
         this.followerRepository = followerRepository;
         this.authenticationService = authenticationService;
+        this.notifierFacade = notifierFacade;
     }
 
     @Transactional
-    public boolean create(FollowRequestDto dto) {
+    public Follower create(FollowRequestDto dto) {
         var followedDto = accountService.findById(dto.getFollowedId());
         var followed = new User();
         BeanUtils.copyProperties(followedDto, followed);
@@ -38,10 +42,10 @@ public class FollowService {
         record.setFollowed(followed);
 
         followerRepository.save(record);
-
-        return true;
+        return record;
     }
 
-    public void notifyFollowed() {
+    public void notifyFollowed(Follower follower) {
+        notifierFacade.notify(follower.getFollower().getId(), follower.getFollowed().getId(), "Seguiu você");
     }
 }
