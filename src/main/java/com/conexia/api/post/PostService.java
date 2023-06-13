@@ -25,7 +25,8 @@ public class PostService {
     public PostResponseDto getById(Long id) {
         var post = postRepository.findById(id).orElseThrow();
 
-        if (post.getPrivacy() && authenticationService.getLoggedInUser().getId().equals(post.getAuthor().getId())) {
+        if (post.getPrivacy() != null && post.getPrivacy() && !authenticationService.getLoggedInUser().getId()
+                .equals(post.getAuthor().getId())) {
             throw new NoSuchElementException();
         }
 
@@ -39,8 +40,8 @@ public class PostService {
         var posts = postRepository.findAllByAuthorId(authorId);
         var dtos = new ArrayList<PostResponseDto>();
         for (Post post : posts) {
-            if (post.getPrivacy() && authenticationService.getLoggedInUser().getId().equals(post.getAuthor()
-                    .getId())) {
+            if (post.getPrivacy() != null && post.getPrivacy() && !authenticationService.getLoggedInUser().getId()
+                    .equals(post.getAuthor().getId())) {
                 continue;
             }
             var dto = new PostResponseDto();
@@ -57,6 +58,11 @@ public class PostService {
         var post = postRepository.findById(dto.getPostId()).orElseThrow();
         var user = authenticationService.getLoggedInUser();
         var result = likeRepository.findByUserIdAndPostId(user.getId(), post.getId());
+
+        if (post.getPrivacy() != null && post.getPrivacy() && !authenticationService.getLoggedInUser().getId()
+                .equals(post.getAuthor().getId())) {
+            throw new NoSuchElementException();
+        }
 
         if (result == null) {
             var like = new Like();
