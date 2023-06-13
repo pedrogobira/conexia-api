@@ -148,7 +148,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"login\": \"pedro@email.com\",\n    \"password\": \"root\"\n}",
+							"raw": "{\n    \"login\": \"tais@email.com\",\n    \"password\": \"root\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -611,6 +611,76 @@
 							"path": [
 								"follow",
 								"recommend"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "NOTIFICATION",
+			"item": [
+				{
+					"name": "read",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"followedId\": \"3\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/notification/read/1",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"notification",
+								"read",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "show",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/notification",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"notification"
 							]
 						}
 					},
