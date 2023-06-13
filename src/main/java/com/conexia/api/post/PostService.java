@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 public class PostService {
@@ -14,7 +15,8 @@ public class PostService {
     private final LikeRepository likeRepository;
     private final AuthenticationService authenticationService;
 
-    public PostService(PostRepository postRepository, LikeRepository likeRepository, AuthenticationService authenticationService) {
+    public PostService(PostRepository postRepository, LikeRepository likeRepository,
+                       AuthenticationService authenticationService) {
         this.postRepository = postRepository;
         this.likeRepository = likeRepository;
         this.authenticationService = authenticationService;
@@ -22,6 +24,11 @@ public class PostService {
 
     public PostResponseDto getById(Long id) {
         var post = postRepository.findById(id).orElseThrow();
+
+        if (post.getPrivacy() && authenticationService.getLoggedInUser().getId().equals(post.getAuthor().getId())) {
+            throw new NoSuchElementException();
+        }
+
         var dto = new PostResponseDto();
         BeanUtils.copyProperties(post, dto);
         dto.setAuthorId(post.getAuthor().getId());
@@ -31,8 +38,11 @@ public class PostService {
     public List<PostResponseDto> show(Long authorId) {
         var posts = postRepository.findAllByAuthorId(authorId);
         var dtos = new ArrayList<PostResponseDto>();
-        for (Post post :
-                posts) {
+        for (Post post : posts) {
+            if (post.getPrivacy() && authenticationService.getLoggedInUser().getId().equals(post.getAuthor()
+                    .getId())) {
+                continue;
+            }
             var dto = new PostResponseDto();
             BeanUtils.copyProperties(post, dto);
             dto.setAuthorId(post.getAuthor().getId());
