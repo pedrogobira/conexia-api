@@ -24,8 +24,9 @@ public class AuthenticationController {
     public ResponseEntity efetuarLogin(@RequestBody LoginRequestDto dados) {
         var authenticationToken = new UsernamePasswordAuthenticationToken(dados.login(), dados.password());
         var authentication = manager.authenticate(authenticationToken);
-        var tokenJWT = tokenService.gerarToken((User) authentication.getPrincipal());
+        var principal = (User) authentication.getPrincipal();
+        var tokenJWT = tokenService.gerarToken(principal);
 
-        return ResponseEntity.ok(new LoginResponseDto(tokenJWT));
+        return ResponseEntity.ok(new LoginResponseDto(tokenJWT, principal.getId(), principal.getImage()));
     }
 }

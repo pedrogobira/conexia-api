@@ -1,5 +1,7 @@
 package com.conexia.api.follow;
 
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -30,7 +32,7 @@ public class FollowerController {
     }
 
     @GetMapping("/recommend")
-    public ResponseEntity<RecommendResponseDto> recommend() {
+    public ResponseEntity<List<RecommendResponseDto>> recommend() {
         return ResponseEntity.status(HttpStatus.OK).body(recommendService.recommend());
     }
 }

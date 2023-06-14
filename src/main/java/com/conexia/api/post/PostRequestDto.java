@@ -15,4 +15,5 @@ public class PostRequestDto {
     private String body;
     private LocalDate date;
     private Boolean privacy;
+    private String image;
 }

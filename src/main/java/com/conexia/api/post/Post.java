@@ -39,4 +39,7 @@ public class Post {
     public Long getTotalLikes() {
         return (long) likes.size();
     }
+
+    @Column(columnDefinition = "TEXT")
+    private String image;
 }

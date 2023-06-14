@@ -19,4 +19,5 @@ public class AccountRequestDto {
     private LocalDate birthday;
     private ColorName favouriteColour;
     private String city;
+    private String image;
 }

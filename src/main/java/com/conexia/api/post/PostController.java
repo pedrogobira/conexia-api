@@ -23,6 +23,11 @@ public class PostController {
         return ResponseEntity.status(HttpStatus.OK).body(postService.show(authorId));
     }
 
+    @GetMapping
+    public ResponseEntity<List<PostResponseDto>> show() {
+        return ResponseEntity.status(HttpStatus.OK).body(postService.showAll());
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<PostResponseDto> get(@PathVariable(value = "id") Long id) {
         return ResponseEntity.status(HttpStatus.OK).body(postService.getById(id));

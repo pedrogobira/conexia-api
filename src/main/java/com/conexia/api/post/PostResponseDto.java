@@ -13,8 +13,12 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class PostResponseDto {
     private Long authorId;
+    private String authorFirstName;
+    private String authorLastName;
+    private String authorImage;
     private String body;
     private LocalDate date;
     private Boolean privacy;
     private Long totalLikes;
+    private String image;
 }

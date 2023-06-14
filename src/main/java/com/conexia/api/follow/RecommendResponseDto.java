@@ -17,4 +17,5 @@ public class RecommendResponseDto {
     private String firstName;
     @NotBlank
     private String lastName;
+    private String image;
 }

@@ -49,9 +49,8 @@ public class User implements Prototype, UserDetails {
     @Column(nullable = false)
     private String city;
 
-    @OneToOne
-    @JoinColumn(name = "id")
-    private Image image;
+    @Column(columnDefinition = "TEXT")
+    private String image;
 
     @Override
     public Prototype clone() {

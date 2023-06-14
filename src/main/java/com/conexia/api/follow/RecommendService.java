@@ -1,46 +1,50 @@
 package com.conexia.api.follow;
 
 import com.conexia.api.user.AuthenticationService;
+import com.conexia.api.user.User;
+import com.conexia.api.user.UserRepository;
+
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
-import java.util.NoSuchElementException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class RecommendService {
     private final FollowerRepository followerRepository;
     private final AuthenticationService authenticationService;
+    private final UserRepository userRepository;
 
-    public RecommendService(FollowerRepository followerRepository, AuthenticationService authenticationService) {
+    public RecommendService(FollowerRepository followerRepository, AuthenticationService authenticationService,
+            UserRepository userRepository) {
         this.followerRepository = followerRepository;
         this.authenticationService = authenticationService;
+        this.userRepository = userRepository;
     }
 
-    public RecommendResponseDto recommend() {
+    public List<RecommendResponseDto> recommend() {
         var user = authenticationService.getLoggedInUser();
-        var followeds = followerRepository.getFollowedsByFollower_Id(user.getId());
 
-        if (followeds.isEmpty()) {
-            throw new NoSuchElementException();
+        var listUsers = userRepository.findByCity(user.getCity());
+        var listRecommend = new ArrayList<RecommendResponseDto>();
+
+        var count = 0;
+
+        for (User listUser : listUsers) {
+            if(count == 10) {
+                break;
+            }
+
+            if(listUser.getId().equals(user.getId())) {
+                continue;
+            }
+
+            listRecommend.add(RecommendResponseDto.builder().userId(listUser.getId()).firstName(listUser.getFirstName())
+                    .lastName(listUser.getLastName()).image(listUser.getImage()).build());
+
+            count += 1;
         }
 
-        Collections.shuffle(followeds);
-        var followed = followeds.get(0).getFollowed();
-
-        var followedsByFollowed = followerRepository.getFollowedsByFollower_Id(followed.getId());
-
-        if (followedsByFollowed.isEmpty()) {
-            throw new NoSuchElementException();
-        }
-
-        Collections.shuffle(followeds);
-        var recommendation = followedsByFollowed.get(0).getFollowed();
-
-        return RecommendResponseDto
-                .builder()
-                .userId(recommendation.getId())
-                .firstName(recommendation.getFirstName())
-                .lastName(recommendation.getLastName())
-                .build();
+        return listRecommend;
     }
 }

@@ -33,6 +33,9 @@ public class PostService {
         var dto = new PostResponseDto();
         BeanUtils.copyProperties(post, dto);
         dto.setAuthorId(post.getAuthor().getId());
+        dto.setAuthorFirstName(post.getAuthor().getFirstName());
+        dto.setAuthorLastName(post.getAuthor().getLastName());
+        dto.setAuthorImage(post.getAuthor().getImage());
         return dto;
     }
 
@@ -47,6 +50,9 @@ public class PostService {
             var dto = new PostResponseDto();
             BeanUtils.copyProperties(post, dto);
             dto.setAuthorId(post.getAuthor().getId());
+            dto.setAuthorFirstName(post.getAuthor().getFirstName());
+            dto.setAuthorLastName(post.getAuthor().getLastName());
+            dto.setAuthorImage(post.getAuthor().getImage());
             dtos.add(dto);
         }
         return dtos;
@@ -73,6 +79,25 @@ public class PostService {
         }
 
         return false;
+    }
+
+    public List<PostResponseDto> showAll() {
+        var posts = postRepository.findAll();
+        var dtos = new ArrayList<PostResponseDto>();
+        for (Post post : posts) {
+            if (post.getPrivacy() != null && post.getPrivacy() && !authenticationService.getLoggedInUser().getId()
+                    .equals(post.getAuthor().getId())) {
+                continue;
+            }
+            var dto = new PostResponseDto();
+            BeanUtils.copyProperties(post, dto);
+            dto.setAuthorId(post.getAuthor().getId());
+            dto.setAuthorFirstName(post.getAuthor().getFirstName());
+            dto.setAuthorLastName(post.getAuthor().getLastName());
+            dto.setAuthorImage(post.getAuthor().getImage());
+            dtos.add(dto);
+        }
+        return dtos;
     }
 }
 
