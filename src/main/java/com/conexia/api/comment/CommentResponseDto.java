@@ -1,4 +1,4 @@
-package com.conexia.api.post;
+package com.conexia.api.comment;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,15 +11,11 @@ import java.time.LocalDate;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class PostResponseDto {
+public class CommentResponseDto {
     private Long authorId;
     private String authorFirstName;
     private String authorLastName;
     private String authorImage;
     private String body;
     private LocalDate date;
-    private Boolean privacy;
-    private Long totalLikes;
-    private Long totalComments;
-    private String image;
 }

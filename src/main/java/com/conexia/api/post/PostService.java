@@ -1,5 +1,6 @@
 package com.conexia.api.post;
 
+import com.conexia.api.comment.CommentRepository;
 import com.conexia.api.user.AuthenticationService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.BeanUtils;
@@ -13,12 +14,14 @@ import java.util.NoSuchElementException;
 public class PostService {
     private final PostRepository postRepository;
     private final LikeRepository likeRepository;
+    private final CommentRepository commentRepository;
     private final AuthenticationService authenticationService;
 
     public PostService(PostRepository postRepository, LikeRepository likeRepository,
-                       AuthenticationService authenticationService) {
+                       CommentRepository commentRepository, AuthenticationService authenticationService) {
         this.postRepository = postRepository;
         this.likeRepository = likeRepository;
+        this.commentRepository = commentRepository;
         this.authenticationService = authenticationService;
     }
 
@@ -36,6 +39,10 @@ public class PostService {
         dto.setAuthorFirstName(post.getAuthor().getFirstName());
         dto.setAuthorLastName(post.getAuthor().getLastName());
         dto.setAuthorImage(post.getAuthor().getImage());
+
+        var totalComments = commentRepository.countCommentsByPostId(post.getId());
+        dto.setTotalComments(totalComments);
+
         return dto;
     }
 
@@ -53,6 +60,10 @@ public class PostService {
             dto.setAuthorFirstName(post.getAuthor().getFirstName());
             dto.setAuthorLastName(post.getAuthor().getLastName());
             dto.setAuthorImage(post.getAuthor().getImage());
+
+            var totalComments = commentRepository.countCommentsByPostId(post.getId());
+            dto.setTotalComments(totalComments);
+
             dtos.add(dto);
         }
         return dtos;
@@ -95,6 +106,10 @@ public class PostService {
             dto.setAuthorFirstName(post.getAuthor().getFirstName());
             dto.setAuthorLastName(post.getAuthor().getLastName());
             dto.setAuthorImage(post.getAuthor().getImage());
+
+            var totalComments = commentRepository.countCommentsByPostId(post.getId());
+            dto.setTotalComments(totalComments);
+
             dtos.add(dto);
         }
         return dtos;
